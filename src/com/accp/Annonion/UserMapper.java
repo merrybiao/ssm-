@@ -15,6 +15,9 @@ import com.accp.entity.User;
  */
 public interface UserMapper {
 	
+	/**
+	 * 第四次测试
+	 */
 	@SelectProvider(type=UserMapperProvider.class,method="select")
 	public List<User> getUserAll(Map<String, String> map);
 	
