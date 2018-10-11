@@ -8,6 +8,11 @@ import org.apache.ibatis.annotations.SelectProvider;
 
 import com.accp.entity.User;
 
+/**
+ * 第二次测试github修改文件
+ * @author Administrator
+ *
+ */
 public interface UserMapper {
 	
 	@SelectProvider(type=UserMapperProvider.class,method="select")
