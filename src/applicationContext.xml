@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xmlns:tx="http://www.springframework.org/schema/tx"
+xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+    <!-- 1.配置jdbc文件 -->
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="locations" value="classpath:jdbc.properties"/>
+    </bean>
+
+    <!-- 2.扫描的包路径，这里不扫描被@Controller注解的类 --><!--使用<context:component-scan/> 可以不在配置<context:annotation-config/> -->
+    <context:component-scan base-package="com.accp">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+		  <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+			init-method="init" destroy-method="close">
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+			<property name="filters" value="stat" />
+			<property name="maxActive" value="20" />
+			<property name="initialSize" value="1" />
+			<property name="maxWait" value="60000" />
+			<property name="minIdle" value="1" />
+			<property name="timeBetweenEvictionRunsMillis" value="60000" />
+			<property name="minEvictableIdleTimeMillis" value="300000" />
+			<property name="validationQuery" value="SELECT 'x'" />
+			<property name="testWhileIdle" value="true" />
+			<property name="testOnBorrow" value="false" />
+			<property name="testOnReturn" value="false" />
+			<property name="poolPreparedStatements" value="true" />
+			<property name="maxPoolPreparedStatementPerConnectionSize" value="50" />
+		</bean> 
+		
+	<!-- 配置事务管理器 -->
+    <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+		
+    <!-- 配置事务的传播特性 -->
+     <tx:advice id="txAdvice">
+        <tx:attributes>
+            <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="add*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="save*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="del*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="bulk*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="check*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="reject*" propagation="REQUIRED" rollback-for="Exception" />
+            <tx:method name="*" propagation="REQUIRED" read-only="true" />
+        </tx:attributes>
+    </tx:advice>
+    
+    <aop:config>
+        <aop:pointcut id="businessLogicServices"
+            expression="execution(* com.accp.*.service..*.*(..)) || execution(* com.accp.service..*.*(..))"/>
+        <aop:advisor pointcut-ref="businessLogicServices" advice-ref="txAdvice" />
+    </aop:config>
+    
+	<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->  
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+    	 <property name="typeAliasesPackage" value="com.accp.entity" />
+        <property name="dataSource" ref="dataSource" />  
+        <!-- 自动扫描mapping.xml文件 -->  
+        <property name="mapperLocations" value="classpath:com/accp/mapper/*.xml"></property> 
+    </bean>
+    
+	 <!-- DAO接口所在包名，Spring会自动查找其下的类 ,自动扫描了所有的XxxxMapper.xml对应的mapper接口文件,只要Mapper接口类和Mapper映射文件对应起来就可以了-->  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.accp.dao,com.accp.Annonion" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
+    </bean>
+    
+     <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+    <!-- 此处value改成你的继承tk.mapper的接口类包路径 -->
+        <property name="basePackage" value="com.*.mymapper" />
+        <property name="markerInterface" value="tk.mybatis.mapper.common.Mapper" />
+    </bean>
+		    
+</beans>

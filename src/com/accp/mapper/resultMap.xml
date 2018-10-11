@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.accp.dao.ResultMapMapper">
+  <resultMap id="BirdResultMap" type="com.accp.entity.Bird">
+    <id column="bid" jdbcType="BIGINT" property="bid" />
+    <result column="nameb" jdbcType="VARCHAR" property="name" />
+    <result column="age" jdbcType="VARCHAR" property="age" />
+  </resultMap>
+  
+  <resultMap id="AnimalResultMap" type="com.accp.entity.Animal">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="born" jdbcType="VARCHAR" property="born" />
+    <collection property="bird" resultMap="BirdResultMap"/>
+  </resultMap>
+  
+</mapper>
