@@ -64,7 +64,7 @@ public class DemoController {
 	public List<User> demo6(HttpServletRequest request){
 		HashMap<String, String> hashMap = new HashMap<String, String>();
 		Long id = Long.parseLong(request.getParameter("id"));
-		List<User> insertUser = demoserviceimpl.getUser3(id);
+		List<User> insertUser = demoserviceimpl.saveUser3(id);
 		return insertUser;
 	}
 }

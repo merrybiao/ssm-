@@ -13,7 +13,7 @@ public interface DemoService {
 	
 	public User getUser(Long id);
 	
-	public List<User> getUser3(Long id);
+	public List<User> saveUser3(Long id);
 	
 	public Integer insertUser(Map<String,String> map);
 	

@@ -79,7 +79,7 @@ public class DemoServiceImpl implements DemoService{
 	}
 
 	@Override
-	public List<User> getUser3(Long id) {
+	public List<User> saveUser3(Long id) {
 		Example example = new Example(User.class);
 		Criteria criteria = example.createCriteria();
 		//criteria.andEqualTo("id", id);
@@ -90,6 +90,10 @@ public class DemoServiceImpl implements DemoService{
 		
 		System.out.println(selectCountByExample);*/
 		List<User> list = usermapper2.selectByExample(example);
+		User us = new User();
+		us.setName("小红花");
+		us.setSal(1515);
+		usermapper2.insert(us);
 		for (User user : list) {
 			System.out.println(JSON.toJSONString(user));
 		}
