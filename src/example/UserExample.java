@@ -3,6 +3,11 @@ package example;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 
+ * @author Administrator
+ *
+ */
 public class UserExample {
     protected String orderByClause;
 
