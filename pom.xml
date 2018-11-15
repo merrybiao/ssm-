@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.accp</groupId>
-  <artifactId>ssm</artifactId>
+  <artifactId>ssmConsumer</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
   
@@ -129,13 +129,35 @@
         <artifactId>mybatis</artifactId>
         <version>${mybatis.version}</version>
     </dependency>
+    <!-- spring集成mongodb -->
+	<dependency>
+         <groupId>org.mongodb</groupId>
+         <artifactId>mongo-java-driver</artifactId>
+         <version>2.13.0-rc0</version>
+     </dependency>
 
+     <dependency>
+         <groupId>org.springframework.data</groupId>
+         <artifactId>spring-data-mongodb</artifactId>
+         <version>1.7.1.RELEASE</version>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.data</groupId>
+         <artifactId>spring-data-mongodb-cross-store</artifactId>
+         <version>1.7.1.RELEASE</version>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.data</groupId>
+         <artifactId>spring-data-mongodb-log4j</artifactId>
+         <version>1.7.1.RELEASE</version>
+     </dependency>
     <!-- mybatis/spring包 -->
     <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis-spring</artifactId>
         <version>1.2.3</version>
     </dependency>
+    
   <!-- 添加servlet3.0核心包 -->
           <dependency>
               <groupId>javax.servlet</groupId>
@@ -164,6 +186,53 @@
 		    <artifactId>persistence-api</artifactId>
 		    <version>1.0</version>
 		</dependency>
+    	<!-- dubbo依赖jar -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<version>2.4.9</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+			<dependency>
+			    <groupId>com.google.code.gson</groupId>
+			    <artifactId>gson</artifactId>
+			    <version>2.2.4</version>
+			</dependency>
+			
+			<!-- redis配置 -->
+		<dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.6.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.7.3</version>
+        </dependency>
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.5</version>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.sgroschupf</groupId>
+			<artifactId>zkclient</artifactId>
+			<version>0.1</version>
+		</dependency>
     <!--单元测试依赖 -->
     <dependency>
       <groupId>junit</groupId>
@@ -171,6 +240,8 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    
+    
   </dependencies>
   
   <build>
@@ -190,7 +261,7 @@
         <configuration>
           <warSourceDirectory>WebContent</warSourceDirectory>
           <failOnMissingWebXml>false</failOnMissingWebXml>
-        </configuration>
+        </configuration> 
       </plugin>
     </plugins>
   </build>

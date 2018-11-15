@@ -2,29 +2,20 @@ package com.accp.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.ietf.jgss.Oid;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
-/**
- * user
- * @author 
- */
-@Table(name = "user")
-public class User implements Serializable {
+public class User2  {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	
     private Integer id;
 
     private Integer sal;
 
     private String name;
 
-    private static final long serialVersionUID = 1L;
-
-    public Integer getId() {
+	public Integer getId() {
         return id;
     }
 
@@ -47,4 +38,5 @@ public class User implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
 }
