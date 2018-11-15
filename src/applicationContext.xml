@@ -5,18 +5,25 @@ xmlns:context="http://www.springframework.org/schema/context"
 xmlns:aop="http://www.springframework.org/schema/aop"
 xmlns:tx="http://www.springframework.org/schema/tx"
 xmlns:task="http://www.springframework.org/schema/task"
-xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-xsi:schemaLocation=" http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
-	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd 
+xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd 
     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
-	http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
-    <!-- 1.配置jdbc文件 -->
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+    
+    <bean id="configRealm" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+         <property name="locations">
+            <list>
+                <value>classpath:mongo.properties</value>
+                <value>classpath:jdbc.properties</value>
+                <value>classpath:redis.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 1.设置配置文件 -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-            <property name="locations" value="classpath:jdbc.properties"/>
+            <property name="properties" ref="configRealm"/>
             <property name="ignoreUnresolvablePlaceholders" value="true"></property>
     </bean>
 
@@ -92,31 +99,13 @@ xsi:schemaLocation=" http://code.alibabatech.com/schema/dubbo http://code.alibab
         <property name="basePackage" value="com.*.mymapper" />
         <property name="markerInterface" value="tk.mybatis.mapper.common.Mapper" />
     </bean> 
-    
-<!--    配置mongodb -->
-    <context:property-placeholder location="classpath:mongodb.properties" ignore-unresolvable="true" />
-     <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}" >
-        <mongo:options 
-            connections-per-host="${mongo.connectionsPerHost}" 
-            threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}" 
-            connect-timeout="${mongo.connectTimeout}" 
-            max-wait-time="${mongo.maxWaitTime}" 
-            auto-connect-retry="${mongo.autoConnectRetry}" 
-            socket-keep-alive="${mongo.socketKeepAlive}" 
-            socket-timeout="${mongo.socketTimeout}" 
-            slave-ok="${mongo.slaveOk}" 
-            write-number="1" 
-            write-timeout="0" write-fsync="true"/> 
-    </mongo:mongo>
-    <mongo:db-factory dbname="test" mongo-ref="mongo"/>
-    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
-       <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
-    </bean>
-    
+        
    <aop:aspectj-autoproxy />
    
    <task:annotation-driven />
-    
-    
-		    
+   
+   <import resource="redis-spring.xml"/>
+   
+    <import resource="mongo-spring.xml"/>
+      
 </beans>
