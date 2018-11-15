@@ -4,13 +4,20 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xmlns:context="http://www.springframework.org/schema/context"
 xmlns:aop="http://www.springframework.org/schema/aop"
 xmlns:tx="http://www.springframework.org/schema/tx"
-xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+xmlns:task="http://www.springframework.org/schema/task"
+xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+xsi:schemaLocation=" http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd  
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd 
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
 	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd">
     <!-- 1.配置jdbc文件 -->
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
             <property name="locations" value="classpath:jdbc.properties"/>
+            <property name="ignoreUnresolvablePlaceholders" value="true"></property>
     </bean>
 
     <!-- 2.扫描的包路径，这里不扫描被@Controller注解的类 --><!--使用<context:component-scan/> 可以不在配置<context:annotation-config/> -->
@@ -75,7 +82,7 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     </bean>
     
 	 <!-- DAO接口所在包名，Spring会自动查找其下的类 ,自动扫描了所有的XxxxMapper.xml对应的mapper接口文件,只要Mapper接口类和Mapper映射文件对应起来就可以了-->  
-    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.accp.dao,com.accp.Annonion" />
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>  
     </bean>
@@ -84,6 +91,32 @@ xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.sprin
     <!-- 此处value改成你的继承tk.mapper的接口类包路径 -->
         <property name="basePackage" value="com.*.mymapper" />
         <property name="markerInterface" value="tk.mybatis.mapper.common.Mapper" />
+    </bean> 
+    
+<!--    配置mongodb -->
+    <context:property-placeholder location="classpath:mongodb.properties" ignore-unresolvable="true" />
+     <mongo:mongo id="mongo" host="${mongo.host}" port="${mongo.port}" >
+        <mongo:options 
+            connections-per-host="${mongo.connectionsPerHost}" 
+            threads-allowed-to-block-for-connection-multiplier="${mongo.threadsAllowedToBlockForConnectionMultiplier}" 
+            connect-timeout="${mongo.connectTimeout}" 
+            max-wait-time="${mongo.maxWaitTime}" 
+            auto-connect-retry="${mongo.autoConnectRetry}" 
+            socket-keep-alive="${mongo.socketKeepAlive}" 
+            socket-timeout="${mongo.socketTimeout}" 
+            slave-ok="${mongo.slaveOk}" 
+            write-number="1" 
+            write-timeout="0" write-fsync="true"/> 
+    </mongo:mongo>
+    <mongo:db-factory dbname="test" mongo-ref="mongo"/>
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+       <constructor-arg name="mongoDbFactory" ref="mongoDbFactory"/>
     </bean>
+    
+   <aop:aspectj-autoproxy />
+   
+   <task:annotation-driven />
+    
+    
 		    
 </beans>
